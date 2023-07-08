@@ -1,3 +1,10 @@
+/* 
+Parser that uses Axios to retrieve the HTML of a webpage and processes the obtained HTML using Cheerio. 
+
+Script outputs messages to the console about the current state of data processing and
+in case of successful completion saves the data to the "output.txt" file
+*/
+
 const axios = require('axios')
 const cheerio = require('cheerio')
 const fs = require('fs')
@@ -43,8 +50,9 @@ const page = {
     }
 }
 
+// Creates and saves data to the file in the directory of project
 function saveOutputToFile() {
-    return fs.writeFile('output.txt', output, error => {
+    return fs.writeFile('output.txt', output, (error) => {
         if (error) {
             console.error(error)
             return
@@ -52,33 +60,14 @@ function saveOutputToFile() {
     })
 }
 
-// Fetches data from a website
-axios(page.dayToday.link)
-.then(response => {
-        const $ = cheerio.load(response.data)
-        console.log('Data processing...')
+axios(page.dayToday.link) // Fetches data from a website
+.then((response) => {
+    const $ = cheerio.load(response.data)
+    console.log('Data processing...')
+    return page.dayToday.promise($)
+})
+.then(() => {
+    console.log('Success! Check the "txt" file')
+})
+.catch((error) => console.error(error.message))
 
-        return page.dayToday.promise($)
-    })
-    .then(() => {
-        console.log('Success! Check the "txt" file')
-    })
-    .catch(error => console.error(error.message))
-  
-
-/*
-In the script below, we get the names of each city in Ukraine.
-*/
-
-// axios(page.citiesOfUkraine.link)
-// .then(response => {
-//         const $ = cheerio.load(response.data)
-//         // let output = ''
-//         console.log('Data processing...')
-
-//         return page.citiesOfUkraine.promise($)
-//     })
-//     .then(() => {
-//         console.log('Success! Check the "txt" file')
-//     })
-//     .catch(error => console.error(error.message))
