@@ -62,8 +62,8 @@ function saveOutputToFile() {
 
 axios(page.dayToday.link) // Fetches data from a website
 .then((response) => {
-    const $ = cheerio.load(response.data)
     console.log('Data processing...')
+    const $ = cheerio.load(response.data)
     return page.dayToday.promise($)
 })
 .then(() => {
